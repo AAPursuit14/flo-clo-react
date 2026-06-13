@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { categories, quickItems } from '../data'
 import useDragToClose from '../hooks/useDragToClose'
 
+const catByTitle = Object.fromEntries(categories.map((c) => [c.title, c]))
+
 function dayLabel(offset) {
   if (offset === 0) return 'Today'
   if (offset < 0) return `${Math.abs(offset)} day${offset < -1 ? 's' : ''} ago`
   return `In ${offset} day${offset > 1 ? 's' : ''}`
 }
 
-export default function SymptomSheet({ className, hiddenCats, onClose, onEditCats, toast }) {
+export default function SymptomSheet({ className, activeCats, onClose, onEditCats, toast }) {
   const [selected, setSelected] = useState(() => new Set())
   const [water, setWater] = useState(0)
   const [dayOffset, setDayOffset] = useState(0)
@@ -74,7 +76,7 @@ export default function SymptomSheet({ className, hiddenCats, onClose, onEditCat
           <span className="edit" onClick={onEditCats}>Edit</span>
         </div>
 
-        {categories.filter((c) => !hiddenCats.has(c.title)).map((c) => (
+        {activeCats.map((title) => catByTitle[title]).filter(Boolean).map((c) => (
           <div className="catcard" key={c.title}>
             <h4>
               {c.title}

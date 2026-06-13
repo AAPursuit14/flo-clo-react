@@ -272,9 +272,23 @@ body{
 .ecsug{background:#fff;border-radius:20px;margin:14px 18px;padding:18px;display:flex;
   justify-content:space-between;align-items:center;font-size:19px;font-weight:600}
 .eclist{background:#fff;border-radius:20px;margin:14px 18px 0;padding:0 18px}
-.ecrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:18px 0;border-bottom:1px solid var(--line);font-size:18px;font-weight:500}
+.ecrow{display:flex;align-items:center;gap:14px;
+  padding:14px 0;border-bottom:1px solid var(--line)}
 .ecrow:last-child{border-bottom:none}
+.ecname{flex:1;font-size:18px;font-weight:500}
+.ecrow.dragging{background:#faf6f4;border-radius:12px;border-bottom-color:transparent;
+  box-shadow:0 6px 18px rgba(0,0,0,.14);position:relative;z-index:2;padding-left:10px;padding-right:10px}
+.ecbtn{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:none;cursor:pointer;
+  color:#fff;font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font);padding:0}
+.ecbtn.del{background:#ff3b30}
+.ecbtn.add{background:#34c759}
+.ecbtn:disabled{background:#d7d2d4;cursor:default}
+.ecgrip{flex:0 0 24px;display:flex;flex-direction:column;gap:3px;align-items:flex-end;
+  cursor:grab;touch-action:none;padding:4px 0}
+.ecgrip:active{cursor:grabbing}
+.ecgrip span{display:block;width:24px;height:2px;border-radius:2px;background:#c4bfc2}
+.ecgrip[aria-disabled="true"]{cursor:default;opacity:.45}
 .sw{width:52px;height:32px;border-radius:16px;background:#d9d4d6;position:relative;
   transition:.2s;cursor:pointer;flex:0 0 52px}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;

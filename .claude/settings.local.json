@@ -14,7 +14,8 @@
       "Bash(git commit -m 'Flo home screen + My Daily Insights carousel as React + Vite app *)",
       "Bash(gh repo *)",
       "Bash(git commit -q -m 'Add month-grid calendar; drag-down-to-close for bottom sheets *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git commit -q -m 'Redesign Edit categories: delete-to-removed, re-add, drag reorder *)"
     ]
   }
 }

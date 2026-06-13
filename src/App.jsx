@@ -1,5 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
-import { stories } from './data'
+import { stories, categories } from './data'
+
+const DEFAULT_ORDER = categories.map((c) => c.title)
 import StatusBar from './components/StatusBar'
 import TopBar from './components/TopBar'
 import WeekStrip from './components/WeekStrip'
@@ -18,7 +20,9 @@ export default function App() {
   const [periodOn, setPeriodOn] = useState(false)
   const [storyKey, setStoryKey] = useState(null)
   const [seg, setSeg] = useState(0)
-  const [hiddenCats, setHiddenCats] = useState(() => new Set())
+  const [activeCats, setActiveCats] = useState(DEFAULT_ORDER) // ordered titles shown on the sheet
+  const [removedCats, setRemovedCats] = useState([])          // titles parked for re-adding
+  const [suggested, setSuggested] = useState(false)           // "Suggested categories" toggle
   const [toast, setToast] = useState({ msg: '', show: false })
   const [placeholder, setPlaceholder] = useState(null) // {emoji, title} or null
   const toastTimer = useRef(null)
@@ -58,14 +62,26 @@ export default function App() {
   const storyPrev = () => { if (story && seg > 0) setSeg(seg - 1) }
 
   /* ---- edit categories ---- */
-  const toggleCat = (title) => {
-    setHiddenCats((prev) => {
-      const next = new Set(prev)
-      const removing = !next.has(title)
-      removing ? next.add(title) : next.delete(title)
-      showToast(title + (removing ? ' removed' : ' added'))
-      return next
-    })
+  const deleteCat = (title) => {
+    setActiveCats((prev) => prev.filter((t) => t !== title))
+    setRemovedCats((prev) => (prev.includes(title) ? prev : [...prev, title]))
+    showToast(title + ' removed')
+  }
+  const readdCat = (title) => {
+    setRemovedCats((prev) => prev.filter((t) => t !== title))
+    setActiveCats((prev) => (prev.includes(title) ? prev : [...prev, title]))
+    showToast(title + ' added')
+  }
+  const reorderCats = (newOrder) => setActiveCats(newOrder)
+  const toggleSuggested = () => {
+    const next = !suggested
+    setSuggested(next)
+    if (next) {
+      // "Suggested" on → all categories back, in default order
+      setActiveCats(DEFAULT_ORDER)
+      setRemovedCats([])
+      showToast('All categories added · default order')
+    }
   }
 
   /* ---- tabs ---- */
@@ -118,7 +134,7 @@ export default function App() {
           day position survive closing, like the prototype's hidden DOM. */}
       <SymptomSheet
         className={sheetOv.className}
-        hiddenCats={hiddenCats}
+        activeCats={activeCats}
         onClose={sheetOv.close}
         onEditCats={editOv.open}
         toast={showToast}
@@ -126,8 +142,13 @@ export default function App() {
 
       <EditCategories
         className={editOv.className}
-        hiddenCats={hiddenCats}
-        onToggleCat={toggleCat}
+        activeCats={activeCats}
+        removedCats={removedCats}
+        suggested={suggested}
+        onDelete={deleteCat}
+        onReadd={readdCat}
+        onReorder={reorderCats}
+        onToggleSuggested={toggleSuggested}
         onClose={editOv.close}
       />
 
