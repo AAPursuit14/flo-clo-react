@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
-import { stories, categories } from './data'
+import { stories, categories, widgetTitles } from './data'
 
-const DEFAULT_ORDER = categories.map((c) => c.title)
+const DEFAULT_ORDER = [...categories.map((c) => c.title), ...widgetTitles]
 import StatusBar from './components/StatusBar'
 import TopBar from './components/TopBar'
 import WeekStrip from './components/WeekStrip'

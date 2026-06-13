@@ -98,6 +98,10 @@ export const categories = [
     chips: [['➕', 'Add pill']] },
 ]
 
+/* widget cards (custom layouts, not chip lists) — orderable/removable like
+   categories. Titles must be unique and not collide with category titles. */
+export const widgetTitles = ['Water', 'Weight', 'Basal temperature', 'Notes']
+
 /* full month grid (June 2026 — derived from the week strip: June 7 is a
    Sunday and the 10th is "today", which lines up with June 2026). Sunday-first
    rows; days from neighboring months are muted. */

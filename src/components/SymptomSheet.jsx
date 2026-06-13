@@ -28,15 +28,82 @@ export default function SymptomSheet({ className, activeCats, onClose, onEditCat
   const cycleDay = 21 + dayOffset
 
   const bumpWater = (d) => {
-    const next = Math.max(0, Math.min(64, water + 8 * d))
-    setWater(next)
-    if (d > 0 && next <= 64) toast(`Water: ${next} fl. oz. logged`)
+    setWater((prev) => {
+      const next = Math.max(0, Math.min(64, prev + 8 * d))
+      if (d > 0 && next !== prev) toast(`Water: ${next} fl. oz. logged`)
+      return next
+    })
   }
 
   const saveLog = () => {
     onClose()
     toast(`${n} symptom${n > 1 ? 's' : ''} logged`)
     setSelected(new Set())
+  }
+
+  /* widget cards, rendered by their title's position in activeCats */
+  const renderWidget = (title) => {
+    switch (title) {
+      case 'Water':
+        return (
+          <div className="catcard" key="Water">
+            <div className="wrow">
+              <span className="wic">🥤</span><h4>Water</h4>
+              <div className="wbtns">
+                <button className="roundbtn" onClick={() => bumpWater(-1)}>−</button>
+                <button className="roundbtn dark" onClick={() => bumpWater(1)}>+</button>
+              </div>
+            </div>
+            <div className="wval"><b>{water}</b>/ 64 fl. oz.</div>
+            <div className="linkrow" onClick={() => toast('Reminders and Settings')}>
+              Reminders and Settings <span>›</span>
+            </div>
+          </div>
+        )
+      case 'Weight':
+        return (
+          <div className="catcard" key="Weight">
+            <div className="wrow">
+              <span className="wic">⚖️</span><h4>Weight</h4>
+              <div className="wbtns">
+                <button className="roundbtn" onClick={() => toast('Weight cleared')}>🗑</button>
+                <button className="roundbtn dark" onClick={() => toast('Log your weight')}>✏️</button>
+              </div>
+            </div>
+            <div className="whint">Log your weight</div>
+            <div className="linkrow" onClick={() => toast('View chart')}>View chart <span>›</span></div>
+          </div>
+        )
+      case 'Basal temperature':
+        return (
+          <div className="catcard" key="Basal temperature">
+            <div className="wrow">
+              <span className="wic">🌡️</span><h4>Basal temperature</h4>
+              <div className="wbtns">
+                <button className="roundbtn" onClick={() => toast('Temperature cleared')}>🗑</button>
+                <button className="roundbtn dark" onClick={() => toast('Log your temperature')}>✏️</button>
+              </div>
+            </div>
+            <div className="whint">Log your temperature</div>
+            <div className="linkrow" onClick={() => toast('View chart')}>View chart <span>›</span></div>
+          </div>
+        )
+      case 'Notes':
+        return (
+          <div className="catcard" key="Notes">
+            <div className="wrow">
+              <span className="wic">📝</span><h4>Notes</h4>
+              <div className="wbtns">
+                <button className="roundbtn" onClick={() => toast('Note cleared')}>🗑</button>
+                <button className="roundbtn dark" onClick={() => toast('Add a note')}>✏️</button>
+              </div>
+            </div>
+            <div className="whint">Add a note about today</div>
+          </div>
+        )
+      default:
+        return null
+    }
   }
 
   return (
@@ -76,7 +143,10 @@ export default function SymptomSheet({ className, activeCats, onClose, onEditCat
           <span className="edit" onClick={onEditCats}>Edit</span>
         </div>
 
-        {activeCats.map((title) => catByTitle[title]).filter(Boolean).map((c) => (
+        {activeCats.map((title) => {
+          const c = catByTitle[title]
+          if (!c) return renderWidget(title) // Water / Weight / Basal temperature / Notes
+          return (
           <div className="catcard" key={c.title}>
             <h4>
               {c.title}
@@ -103,54 +173,8 @@ export default function SymptomSheet({ className, activeCats, onClose, onEditCat
               </div>
             )}
           </div>
-        ))}
-
-        {/* widgets */}
-        <div className="catcard">
-          <div className="wrow">
-            <span className="wic">🥤</span><h4>Water</h4>
-            <div className="wbtns">
-              <button className="roundbtn" onClick={() => bumpWater(-1)}>−</button>
-              <button className="roundbtn dark" onClick={() => bumpWater(1)}>+</button>
-            </div>
-          </div>
-          <div className="wval"><b>{water}</b>/ 64 fl. oz.</div>
-          <div className="linkrow" onClick={() => toast('Reminders and Settings')}>
-            Reminders and Settings <span>›</span>
-          </div>
-        </div>
-        <div className="catcard">
-          <div className="wrow">
-            <span className="wic">⚖️</span><h4>Weight</h4>
-            <div className="wbtns">
-              <button className="roundbtn" onClick={() => toast('Weight cleared')}>🗑</button>
-              <button className="roundbtn dark" onClick={() => toast('Log your weight')}>✏️</button>
-            </div>
-          </div>
-          <div className="whint">Log your weight</div>
-          <div className="linkrow" onClick={() => toast('View chart')}>View chart <span>›</span></div>
-        </div>
-        <div className="catcard">
-          <div className="wrow">
-            <span className="wic">🌡️</span><h4>Basal temperature</h4>
-            <div className="wbtns">
-              <button className="roundbtn" onClick={() => toast('Temperature cleared')}>🗑</button>
-              <button className="roundbtn dark" onClick={() => toast('Log your temperature')}>✏️</button>
-            </div>
-          </div>
-          <div className="whint">Log your temperature</div>
-          <div className="linkrow" onClick={() => toast('View chart')}>View chart <span>›</span></div>
-        </div>
-        <div className="catcard">
-          <div className="wrow">
-            <span className="wic">📝</span><h4>Notes</h4>
-            <div className="wbtns">
-              <button className="roundbtn" onClick={() => toast('Note cleared')}>🗑</button>
-              <button className="roundbtn dark" onClick={() => toast('Add a note')}>✏️</button>
-            </div>
-          </div>
-          <div className="whint">Add a note about today</div>
-        </div>
+          )
+        })}
 
         <div style={{ height: 20 }}></div>
       </div>

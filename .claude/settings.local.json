@@ -16,7 +16,8 @@
       "Bash(git commit -q -m 'Add month-grid calendar; drag-down-to-close for bottom sheets *)",
       "Bash(git push *)",
       "Bash(git commit -q -m 'Redesign Edit categories: delete-to-removed, re-add, drag reorder *)",
-      "Bash(git commit -q -m 'Match Edit categories type weights to Flo reference *)"
+      "Bash(git commit -q -m 'Match Edit categories type weights to Flo reference *)",
+      "Bash(git commit -q -m 'Make Water/Weight/Basal temp/Notes editable categories *)"
     ]
   }
 }
