@@ -1,0 +1,717 @@
+<!-- Flo-Clo — a faithful clone of the Flo app home screen + My Daily Insights carousel.
+     Built as a self-contained prototype: open in any browser, click any card.
+     Look rebuilt from reference screenshots using original placeholder icons/copy. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flo-Clo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ef5b80;            /* primary coral-pink (Log period, links) */
+    --pink-soft:#fce8ee;
+    --ink:#1c1b1f;             /* near-black text */
+    --ink-soft:#6b6770;
+    --cream:#f7efeb;           /* warm home background */
+    --cream-2:#f1ece9;         /* lower section bg */
+    --halo:#fbdfe0;            /* pink radial behind hero */
+    --card:#ffffff;
+    --line:#eceaea;
+    --magenta:#dd8ed6;         /* "symptoms to expect" */
+    --coral:#f4998e;           /* sex drive */
+    --yellow:#f3c45c;          /* steroid card */
+    --peri:#cdd6f2;            /* "in our 40s" lavender */
+    --sage:#a9c2b3;            /* discharge */
+    --plum:#3c2030;            /* PCOS renamed */
+    --forest:#2f4a3f;          /* cycle changes 40s */
+    --font:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:var(--font);
+    background:#d8d3d0;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:24px;color:var(--ink);
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone{
+    position:relative;width:390px;height:800px;
+    background:var(--cream);border-radius:46px;
+    box-shadow:0 30px 70px rgba(0,0,0,.35), 0 0 0 11px #111, 0 0 0 12px #2a2a2a;
+    overflow:hidden;
+  }
+  .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+  .screen::-webkit-scrollbar{display:none}
+
+  /* ---------- status bar ---------- */
+  .status{display:flex;justify-content:space-between;align-items:center;
+    padding:14px 26px 4px;font-size:14px;font-weight:600}
+  .status .right{display:flex;gap:6px;align-items:center}
+  .battery{border:1.4px solid var(--ink);border-radius:4px;width:24px;height:13px;
+    position:relative;display:flex;align-items:center;padding:1.5px}
+  .battery::after{content:"";position:absolute;right:-3px;top:3.5px;width:2px;height:5px;
+    background:var(--ink);border-radius:0 2px 2px 0}
+  .battery i{background:var(--ink);height:100%;width:90%;border-radius:1.5px;font-style:normal}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 2px}
+  .avatar{width:42px;height:42px;border-radius:50%;background:#27a544;display:flex;
+    align-items:center;justify-content:center;font-size:22px}
+  .topbar .date{font-size:17px;font-weight:600}
+  .cal{width:30px;height:30px}
+
+  /* ---------- week strip ---------- */
+  .week{display:flex;justify-content:space-between;padding:14px 22px 6px}
+  .week .day{display:flex;flex-direction:column;align-items:center;gap:8px;width:34px;cursor:pointer}
+  .week .dow{font-size:11px;color:var(--ink-soft);font-weight:600;letter-spacing:.5px}
+  .week .num{font-size:17px;font-weight:600;width:34px;height:34px;display:flex;
+    align-items:center;justify-content:center;border-radius:50%}
+  .week .day.today .dow{color:var(--ink)}
+  .week .day.today .num{background:#dcd7d4}
+  .week .day.sel .num{background:var(--pink);color:#fff}
+  .week .day.period .num{background:var(--pink);color:#fff;font-weight:700}
+  .week .day.period.pred .num{background:#f6b3c7;color:#fff}
+  .week .day.period .dow{color:var(--pink)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;text-align:center;padding:20px 24px 30px}
+  .halo{position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+    width:360px;height:300px;border-radius:50%;
+    background:radial-gradient(circle at 50% 40%,var(--halo),transparent 62%);z-index:0}
+  .hero>*{position:relative;z-index:1}
+  .hero h1{font-size:40px;line-height:1.12;font-weight:700;letter-spacing:-.5px}
+  .hero .sub{margin-top:16px;font-size:16px;color:var(--ink);display:inline-flex;
+    align-items:center;gap:6px}
+  .info{width:18px;height:18px;border-radius:50%;border:1.5px solid #b9b4b8;color:#b9b4b8;
+    display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+  .logbtn{margin-top:24px;background:var(--pink);color:#fff;border:none;font-family:var(--font);
+    font-size:16px;font-weight:600;padding:15px 40px;border-radius:30px;cursor:pointer;
+    box-shadow:0 8px 18px rgba(239,91,128,.35)}
+  .logbtn:active{transform:scale(.97)}
+
+  /* ---------- lower section ---------- */
+  .lower{background:var(--cream-2);border-radius:30px 30px 0 0;margin-top:6px;
+    padding:26px 0 24px;min-height:420px}
+  .sec-h{font-size:21px;font-weight:700;padding:0 22px 14px}
+  .sec-h span{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- carousel ---------- */
+  .carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:0 22px 6px;scroll-padding-left:22px}
+  .carousel::-webkit-scrollbar{display:none}
+  .insight{flex:0 0 150px;height:158px;border-radius:20px;scroll-snap-align:start;
+    cursor:pointer;position:relative;overflow:hidden;border:2px solid transparent;
+    transition:transform .15s ease}
+  .insight:active{transform:scale(.96)}
+  .insight .pad{padding:16px;height:100%;display:flex;flex-direction:column}
+  .ic-title{font-size:15px;font-weight:600;line-height:1.25}
+  .ic-bottom{margin-top:auto}
+
+  /* individual card styles */
+  .c-log{background:#fff;border-color:var(--line)}
+  .c-log .plus{width:46px;height:46px;border-radius:50%;background:var(--pink);color:#fff;
+    font-size:28px;font-weight:400;display:flex;align-items:center;justify-content:center}
+  .c-expect{background:var(--magenta);border-color:#e06fb6;color:#3a1f33}
+  .c-expect .lock{width:48px;height:48px;border-radius:50%;background:#f1a9c2;
+    display:flex;align-items:center;justify-content:center;font-size:22px}
+  .c-sex{background:#fff;border-color:#f1a9b6;padding:0}
+  .c-sex .top{background:var(--coral);height:62%;border-radius:18px 18px 0 0}
+  .c-sex .bot{padding:10px 14px;display:flex;align-items:center;gap:8px}
+  .c-sex .heart{width:34px;height:34px;border-radius:50%;background:var(--pink);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 34px}
+  .c-sex .lbl{position:absolute;top:14px;left:14px;font-weight:600;font-size:15px}
+  .c-sex .val{font-weight:700;font-size:16px}
+  .c-myth{background:var(--peri);color:#27324d}
+  .c-myth .pin{width:40px;height:40px;border-radius:50%;background:#fff;display:flex;
+    align-items:center;justify-content:center;font-size:20px}
+  .c-disch{background:#fff;border-color:var(--line);padding:0}
+  .c-disch .top{background:var(--sage);height:60%;border-radius:18px 18px 0 0}
+  .c-disch .bot{padding:12px 14px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+  .c-disch .drop{width:30px;height:30px;border-radius:50%;background:#e7dcf3;display:flex;
+    align-items:center;justify-content:center;font-size:15px}
+  .c-pcos{background:var(--plum);color:#fff}
+  .c-pcos .letters{display:flex;align-items:center;gap:4px;margin-top:auto}
+  .c-pcos .letters .a{font-size:18px;margin-right:2px}
+  .c-pcos .letters b{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:14px;font-weight:700;color:#2a1420}
+  .c-pcos .l1{background:#f3a8cf}.c-pcos .l2{background:#f0d28a}
+  .c-pcos .l3{background:#f3a8cf}.c-pcos .l4{background:#f3a8cf}
+  .c-cycle{background:var(--forest);color:#fff}
+  .c-cycle .dice{font-size:40px;margin-top:auto}
+
+  /* ---------- later in cycle peek ---------- */
+  .later{background:#fff;margin:18px 16px 0;border-radius:20px;padding:18px 18px 14px}
+  .later .lh{font-size:19px;font-weight:700;margin-bottom:14px}
+  .preg{background:#4a5d52;border-radius:16px;height:120px;display:flex;align-items:flex-start;
+    padding:18px;color:#fff;position:relative;overflow:hidden}
+  .preg h3{font-size:24px;font-weight:700}
+  .preg .face{position:absolute;right:-10px;bottom:-6px;font-size:80px;opacity:.85}
+
+  /* ---------- bottom tab bar ---------- */
+  .tabs{position:absolute;bottom:0;left:0;right:0;height:78px;background:#fbf7f5;
+    border-top:1px solid var(--line);display:flex;align-items:flex-start;
+    padding-top:10px;z-index:30}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
+    font-size:11px;color:#b7b2b6;position:relative}
+  .tab.active{color:var(--ink)}
+  .tab .ti{font-size:21px;width:46px;height:32px;display:flex;align-items:center;justify-content:center}
+  .tab.active .ti{background:#e3ded9;border-radius:12px}
+  .tab .dot{position:absolute;top:-2px;right:24px;width:9px;height:9px;border-radius:50%;
+    background:var(--pink)}
+
+  /* ---------- STORY overlay ---------- */
+  .story{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;
+    color:var(--ink);animation:pop .25s ease}
+  .story.open{display:flex}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .bars{display:flex;gap:5px;padding:16px 18px 0;z-index:2}
+  .bar{flex:1;height:3.5px;border-radius:3px;background:rgba(0,0,0,.18);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:rgba(0,0,0,.7);font-style:normal}
+  .bar.done i{width:100%}.bar.active i{width:100%;transition:width .3s linear}
+  .story-top{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0;z-index:2}
+  .story-top .meta{font-size:14px;color:rgba(0,0,0,.55);font-weight:500}
+  .x{font-size:26px;cursor:pointer;line-height:1;background:none;border:none;color:inherit;font-family:var(--font)}
+  .story-body{flex:1;padding:18px 26px;overflow-y:auto;z-index:2}
+  .story-body::-webkit-scrollbar{display:none}
+  .story-body h2{font-size:34px;font-weight:800;line-height:1.1;margin-bottom:22px}
+  .story-body p{font-size:18px;line-height:1.5;color:#2a2730}
+  .swipe{text-align:center;padding-bottom:26px;z-index:2}
+  .swipe .chev{font-size:22px;font-weight:800}
+  .swipe .st{font-weight:700;font-size:18px;margin-top:2px}
+  .swipe .sb{font-size:16px;color:#3a3640}
+  .nav-zone{position:absolute;top:0;bottom:80px;width:42%;z-index:1}
+  .nav-zone.left{left:0}.nav-zone.right{right:0}
+
+  /* patterns grid */
+  .grid{margin-top:10px}
+  .grid .row{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .grid .row .name{width:74px;font-weight:700;font-size:17px}
+  .grid .cells{display:flex;gap:10px}
+  .grid .cell{width:40px;height:40px;border-radius:50%;background:#fff}
+  .grid .cell.check{background:var(--magenta);color:#fff;display:flex;align-items:center;
+    justify-content:center;font-size:20px;font-weight:800}
+  .grid .cols{display:flex;gap:10px;margin:0 0 6px 86px}
+  .grid .cols span{width:40px;text-align:center;color:#6b5a66;font-weight:600;font-size:16px}
+
+  /* pcos quote */
+  .qhero{height:150px;border-radius:18px;background:#f0a9e0;margin-bottom:-30px;
+    display:flex;align-items:center;justify-content:center;font-size:60px}
+  .qhead{background:var(--plum);color:#fff;border-radius:34px;padding:26px;text-align:center;
+    font-size:30px;font-weight:800;position:relative;z-index:2}
+  .qcard{background:#fbf1e4;border-radius:24px;padding:24px;margin-top:16px}
+  .qcard .q{font-size:18px;line-height:1.5;font-weight:500}
+  .qby{display:flex;align-items:center;gap:10px;margin-top:18px}
+  .qby .pf{width:40px;height:40px;border-radius:50%;background:#caa;display:flex;
+    align-items:center;justify-content:center;font-size:18px}
+  .qby small{color:#7a6f63;font-size:13px;line-height:1.3}
+
+  /* ---------- LOG SYMPTOMS sheet ---------- */
+  .sheet{position:absolute;left:0;right:0;bottom:0;top:36px;background:#f1ece9;z-index:70;
+    border-radius:22px 22px 0 0;display:none;flex-direction:column;transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+  .sheet.open{display:flex;transform:translateY(0)}
+  .handle{width:42px;height:5px;border-radius:3px;background:#cfc8c4;margin:10px auto 0}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;padding:8px 22px 4px}
+  .sheet-head .arrow{font-size:24px;color:#9a9398;cursor:pointer;width:30px;text-align:center}
+  .sheet-head .ttl{text-align:center}
+  .sheet-head .ttl b{font-size:18px;font-weight:700;display:block}
+  .sheet-head .ttl small{font-size:13px;color:var(--ink-soft)}
+  .sheet-body{flex:1;overflow-y:auto;padding:8px 18px 20px}
+  .sheet-body::-webkit-scrollbar{display:none}
+  .search{background:#e3ded9;border-radius:14px;padding:13px 16px;color:#8f888d;font-size:16px;
+    display:flex;align-items:center;gap:10px;margin:8px 0 18px}
+  .feel{background:#fff;border-radius:20px;padding:20px 18px}
+  .feel h3{font-size:21px;font-weight:700;margin-bottom:18px}
+  .feel .quick{display:flex;justify-content:space-between}
+  .qitem{display:flex;flex-direction:column;align-items:center;gap:8px;width:74px;cursor:pointer}
+  .qitem .qc{width:62px;height:62px;border-radius:50%;background:#f4eafc;display:flex;
+    align-items:center;justify-content:center;font-size:30px;transition:.15s}
+  .qitem.on .qc{background:var(--pink);transform:scale(1.05)}
+  .qitem .ql{font-size:13px;text-align:center;font-weight:500;line-height:1.2}
+  .cats{display:flex;align-items:center;justify-content:space-between;margin:22px 4px 12px}
+  .cats h3{font-size:21px;font-weight:700}
+  .cats .edit{color:var(--pink);font-weight:600;font-size:16px;cursor:pointer}
+  .catcard{background:#fff;border-radius:20px;padding:20px 18px;margin-bottom:14px}
+  .catcard h4{font-size:18px;font-weight:700;margin-bottom:16px}
+  .catcard h4 .tut{color:var(--pink);font-size:15px;font-weight:600;margin-left:10px}
+  .subt{color:var(--ink-soft);font-size:15px;margin:-10px 0 14px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:#fbe9ec;border-radius:22px;padding:11px 16px;font-size:15px;font-weight:600;
+    display:flex;align-items:center;gap:8px;cursor:pointer;border:2px solid transparent;color:#2a2730}
+  .chip .ce{font-size:16px}
+  .chip.t-mood,.chip.t-preg,.chip.t-other{background:#fdeede}
+  .chip.t-symp{background:#f6e3f4}
+  .chip.t-disch{background:#ebe7fb}
+  .chip.t-dig{background:#fae3ee}
+  .chip.t-ovul{background:#daf1ef}
+  .chip.t-act{background:#def1e1}
+  .chip.t-oc{background:#dceefb}
+  .chip.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+  .linkrow{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);
+    margin-top:16px;padding-top:14px;font-size:17px;font-weight:600;cursor:pointer}
+  .linkrow span{color:#b7b2b6}
+  .wrow{display:flex;align-items:center;gap:10px}
+  .wrow h4{margin:0}
+  .wrow .wic{font-size:22px}
+  .wrow .wbtns{margin-left:auto;display:flex;gap:10px}
+  .roundbtn{width:44px;height:44px;border-radius:50%;border:none;background:#f3f0f0;font-size:19px;
+    cursor:pointer;font-family:var(--font)}
+  .roundbtn.dark{background:#e6e2e2}
+  .wval{font-size:18px;color:var(--ink-soft);margin-top:12px}
+  .wval b{font-size:36px;color:var(--ink);font-weight:800;margin-right:4px}
+  .whint{color:#b7b2b6;font-size:17px;margin-top:10px}
+  @keyframes fadeUpOut{to{opacity:0;transform:translateY(-24px)}}
+  .story.closing,.sheet.closing,.editcats.closing{animation:fadeUpOut .28s ease forwards}
+
+  /* ---------- EDIT CATEGORIES page ---------- */
+  .editcats{position:absolute;left:0;right:0;bottom:0;top:36px;background:#f1ece9;z-index:80;
+    border-radius:22px 22px 0 0;display:none;flex-direction:column;transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.3,.8,.3,1)}
+  .editcats.open{display:flex;transform:translateY(0)}
+  .echead{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;padding:8px 18px 4px}
+  .echead .arrow{font-size:24px;color:var(--ink);cursor:pointer}
+  .echead h2{text-align:center;font-size:20px;font-weight:700}
+  .ecbody{flex:1;overflow-y:auto;padding-bottom:24px}
+  .ecbody::-webkit-scrollbar{display:none}
+  .ecdesc{color:var(--ink-soft);padding:10px 24px 6px;font-size:16px;line-height:1.45}
+  .ecsug{background:#fff;border-radius:20px;margin:14px 18px;padding:18px;display:flex;
+    justify-content:space-between;align-items:center;font-size:19px;font-weight:600}
+  .eclist{background:#fff;border-radius:20px;margin:14px 18px 0;padding:0 18px}
+  .ecrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:18px 0;border-bottom:1px solid var(--line);font-size:18px;font-weight:500}
+  .ecrow:last-child{border-bottom:none}
+  .sw{width:52px;height:32px;border-radius:16px;background:#d9d4d6;position:relative;
+    transition:.2s;cursor:pointer;flex:0 0 52px}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;
+    border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .sw.on{background:var(--pink)}
+  .sw.on::after{left:23px}
+  .savebar{padding:14px 18px;background:#f1ece9}
+  .savebtn{width:100%;background:var(--pink);color:#fff;border:none;font-family:var(--font);
+    font-size:17px;font-weight:700;padding:16px;border-radius:28px;cursor:pointer}
+  .savebtn:disabled{background:#e6c2cd}
+
+  /* toast + simple tab placeholder */
+  .toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#2a2730;color:#fff;padding:12px 22px;border-radius:24px;font-size:14px;font-weight:600;
+    opacity:0;transition:.3s;z-index:90;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .placeholder{position:absolute;inset:0;background:var(--cream);z-index:25;display:none;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px}
+  .placeholder.show{display:flex}
+  .placeholder .pe{font-size:54px}
+  .placeholder h3{font-size:22px;font-weight:700}
+  .placeholder p{color:var(--ink-soft);font-size:15px;max-width:240px}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  :focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+</style>
+
+<div class="phone">
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div class="screen" id="home">
+    <div class="status">
+      <span>8:38</span>
+      <span class="right">
+        <span style="font-size:12px">📶</span><span style="font-size:13px">🛜</span>
+        <span class="battery"><i></i></span>
+      </span>
+    </div>
+
+    <div class="topbar">
+      <div class="avatar">🐼</div>
+      <div class="date">June 10</div>
+      <svg class="cal" viewBox="0 0 24 24" fill="none" stroke="#1c1b1f" stroke-width="1.8">
+        <rect x="3" y="4.5" width="18" height="17" rx="3"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/>
+      </svg>
+    </div>
+
+    <div class="week" id="week"></div>
+
+    <div class="hero">
+      <div class="halo"></div>
+      <h1 id="hero-title">Period in<br>9 days</h1>
+      <div class="sub" id="hero-sub">Lower chance of getting pregnant <span class="info">i</span></div>
+      <br>
+      <button class="logbtn" id="logperiod" onclick="logPeriod()">Log period</button>
+    </div>
+
+    <div class="lower">
+      <div class="sec-h">My daily insights <span>· Today</span></div>
+      <div class="carousel" id="carousel"></div>
+
+      <div class="later">
+        <div class="lh">Later in your cycle</div>
+        <div class="preg" onclick="toast('Article: Am I pregnant?')">
+          <h3>Am I<br>pregnant?</h3>
+          <div class="face">🧑</div>
+        </div>
+      </div>
+    </div>
+    <div style="height:90px"></div>
+  </div>
+
+  <!-- tab placeholder for non-Today tabs -->
+  <div class="placeholder" id="placeholder">
+    <div class="pe" id="ph-emoji">✨</div>
+    <h3 id="ph-title">Coming soon</h3>
+    <p>This tab isn't part of the clone — the build focuses on the Today screen and the My Daily Insights carousel.</p>
+    <button class="logbtn" onclick="goToday()">Back to Today</button>
+  </div>
+
+  <!-- ===== STORY OVERLAY ===== -->
+  <div class="story" id="story">
+    <div class="bars" id="bars"></div>
+    <div class="story-top">
+      <span class="meta" id="story-meta">June 10 · Cycle day 21</span>
+      <button class="x" onclick="closeStory()">✕</button>
+    </div>
+    <div class="story-body" id="story-body"></div>
+    <div class="swipe" onclick="closeStory()">
+      <div class="chev">⌃</div>
+      <div class="st">SWIPE UP</div>
+      <div class="sb">to go back home</div>
+    </div>
+    <div class="nav-zone left" onclick="storyPrev()"></div>
+    <div class="nav-zone right" onclick="storyNext()"></div>
+  </div>
+
+  <!-- ===== LOG SYMPTOMS SHEET ===== -->
+  <div class="sheet" id="sheet">
+    <div class="handle"></div>
+    <div class="sheet-head">
+      <div class="arrow" onclick="bumpDay(-1)">‹</div>
+      <div class="ttl"><b id="sheet-day-label">Today</b><small id="sheet-cycle">Cycle day 21</small></div>
+      <div class="arrow" onclick="bumpDay(1)">›</div>
+    </div>
+    <div class="sheet-body">
+      <div class="search">🔍 Search</div>
+
+      <div class="feel">
+        <h3>What are you feeling today?</h3>
+        <div class="quick" id="quick"></div>
+      </div>
+
+      <div class="cats"><h3>Categories</h3><span class="edit" onclick="openEditCats()">Edit</span></div>
+      <div id="allcats"></div>
+      <div style="height:20px"></div>
+    </div>
+    <div class="savebar">
+      <button class="savebtn" id="savebtn" disabled onclick="saveLog()">Select to save</button>
+    </div>
+  </div>
+
+  <!-- ===== EDIT CATEGORIES page ===== -->
+  <div class="editcats" id="editcats">
+    <div class="handle"></div>
+    <div class="echead">
+      <span class="arrow" onclick="closeEditCats()">‹</span>
+      <h2>Edit categories</h2>
+      <span></span>
+    </div>
+    <div class="ecbody">
+      <div class="ecdesc">Add, remove and rearrange categories yourself, or let your app
+        personalize things based on your cycle phases and logged symptoms.</div>
+      <div class="ecsug">Suggested categories <span class="sw on" onclick="this.classList.toggle('on')"></span></div>
+      <div class="eclist" id="eclist"></div>
+    </div>
+  </div>
+
+  <!-- tab bar -->
+  <div class="tabs" id="tabs"></div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ---------- week strip ---------- */
+const dows=['S','M','T','W','T','F','S'], nums=[7,8,9,10,11,12,13];
+document.getElementById('week').innerHTML=nums.map((n,i)=>{
+  const today=n===10;
+  return `<div class="day ${today?'today':''}" onclick="selDay(this)">
+    <span class="dow">${today?'TODAY':dows[i]}</span><span class="num">${n}</span></div>`;
+}).join('');
+function selDay(el){document.querySelectorAll('.week .day').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel');}
+
+/* ---------- log period: marks today + next days as period (7-day cycle) ---------- */
+let periodOn=false;
+function logPeriod(){
+  periodOn=!periodOn;
+  const days=document.querySelectorAll('.week .day');
+  days.forEach((d,i)=>{
+    const n=nums[i];
+    d.classList.remove('period','pred');
+    if(periodOn&&n>=10&&n<=16){           // June 10–16 = the 7 logged days
+      d.classList.add('period');
+      if(n>10)d.classList.add('pred');     // day 1 solid, days 2–7 lighter
+    }
+  });
+  const t=document.getElementById('hero-title');
+  const s=document.getElementById('hero-sub');
+  const b=document.getElementById('logperiod');
+  if(periodOn){
+    t.innerHTML='Period:<br>Day 1';
+    s.innerHTML='Logged · June 10–16 <span class="info">i</span>';
+    b.textContent='Edit period';
+    toast('Period logged · next 7 days marked');
+  }else{
+    t.innerHTML='Period in<br>9 days';
+    s.innerHTML='Lower chance of getting pregnant <span class="info">i</span>';
+    b.textContent='Log period';
+    toast('Period log removed');
+  }
+}
+
+/* ---------- carousel cards ---------- */
+const cards=[
+  {id:'log',cls:'c-log',action:'sheet',html:`<div class="pad">
+     <div class="ic-title">Log your<br>symptoms</div>
+     <div class="ic-bottom"><div class="plus">+</div></div></div>`},
+  {id:'expect',cls:'c-expect',action:'story',story:'patterns',html:`<div class="pad">
+     <div class="ic-title">Symptoms<br>to expect</div>
+     <div class="ic-bottom"><div class="lock">🔒</div></div></div>`},
+  {id:'sex',cls:'c-sex',action:'story',story:'sexdrive',html:`
+     <div class="lbl">Sex drive</div><div class="top"></div>
+     <div class="bot"><div class="heart">♥</div><div class="val">Neutral</div></div>`},
+  {id:'myth',cls:'c-myth',action:'story',story:'myth',html:`<div class="pad">
+     <div class="ic-title">Bust common<br>myths in<br>your 40s</div>
+     <div class="ic-bottom"><div class="pin">💬</div></div></div>`},
+  {id:'disch',cls:'c-disch',action:'story',story:'discharge',html:`
+     <div class="top"></div><div class="bot"><div class="drop">💧</div>Discharge · Creamy</div>`},
+  {id:'pcos',cls:'c-pcos',action:'story',story:'pcos',html:`<div class="pad">
+     <div class="ic-title">Why has<br>PCOS been<br>renamed?</div>
+     <div class="letters"><span class="a">→</span>
+       <b class="l1">P</b><b class="l2">M</b><b class="l3">O</b><b class="l4">S</b></div></div>`},
+  {id:'cycle',cls:'c-cycle',action:'story',story:'cycle40',html:`<div class="pad">
+     <div class="ic-title">3 common<br>cycle changes<br>in our 40s</div>
+     <div class="dice">🎲</div></div>`},
+];
+document.getElementById('carousel').innerHTML=cards.map(c=>
+  `<div class="insight ${c.cls}" tabindex="0" role="button"
+     onclick="openCard('${c.id}')" onkeydown="if(event.key==='Enter')openCard('${c.id}')">
+     ${c.html}</div>`).join('');
+
+function openCard(id){
+  const c=cards.find(x=>x.id===id);
+  if(c.action==='sheet') openSheet();
+  else openStory(c.story);
+}
+
+/* ---------- STORY content ---------- */
+const stories={
+  patterns:{bg:'#e7d4ef',segs:6,start:1,meta:'June 10 · Cycle day 21',swipe:'to log your symptoms',
+    body:`<h2 style="color:#a01a86">We haven't found any patterns yet</h2>
+      <p>Flo-Clo checks your symptoms to see if any repeat. Keep logging — if a pattern shows up,
+         you'll see it here, plus insights to help you understand it.</p>
+      <div class="grid">
+        <div class="cols"><span>1</span><span>2</span><span>3</span></div>
+        ${[1,2,3].map(r=>`<div class="row"><span class="name">Cycle ${r}</span>
+          <div class="cells">
+            <div class="cell"></div>
+            <div class="cell ${r===1?'check':''}">${r===1?'✓':''}</div>
+            <div class="cell"></div></div></div>`).join('')}
+      </div>`},
+  pcos:{bg:'#f6d59a',segs:6,start:4,meta:'PCOS · renamed to PMOS',swipe:'to read more',
+    body:`<div class="qhero">🤝</div>
+      <div class="qhead">Why does it<br>matter?</div>
+      <div class="qcard">
+        <div class="q">"It reminds doctors and society that this isn't just an ovary issue.
+          We hope it means many women will get the right diagnosis and treatment sooner."</div>
+        <div class="qby"><div class="pf">👩‍⚕️</div>
+          <small><b>Answered by Dr. Alexandra Ho</b><br>Flo-Clo medical advisor, UK</small></div>
+      </div>`},
+  sexdrive:{bg:'#f7d0ca',segs:3,start:1,meta:'June 10 · Cycle day 21',swipe:'to log how you feel',
+    body:`<h2>Your sex drive may feel neutral right now</h2>
+      <p>In the luteal phase, hormone shifts can level out libido for many people. There's no
+         "right" level — logging it just helps Flo-Clo learn what's normal for you.</p>`},
+  myth:{bg:'#cdd6f2',segs:4,start:1,meta:'Cycle myths · in your 40s',swipe:'to keep reading',
+    body:`<h2 style="color:#2c3a63">Myth: your cycle stops mattering in your 40s</h2>
+      <p>Cycles often change in your 40s, but they still carry useful signals. Tracking through
+         this decade helps you tell ordinary shifts apart from ones worth a conversation with a doctor.</p>`},
+  discharge:{bg:'#bcd3c4',segs:5,start:2,meta:'June 10 · Cycle day 21',swipe:'to log discharge',
+    body:`<h2 style="color:#22463a">Creamy discharge is common right now</h2>
+      <p>After ovulation, discharge often turns thicker and creamy. It's a normal part of the cycle.
+         Logging it builds a clearer picture of your patterns over time.</p>`},
+  cycle40:{bg:'#bcd3c4',segs:6,start:3,meta:'Cycle changes · in your 40s',swipe:'to keep reading',
+    body:`<h2 style="color:#22463a">3 common cycle changes in our 40s</h2>
+      <p>Shorter cycles, heavier or lighter flow, and more variation month to month are all common
+         as you approach perimenopause. Knowing what's typical makes the changes less alarming.</p>`},
+};
+let curStory=null,curSeg=0;
+function openStory(key){
+  const s=stories[key];curStory=s;curSeg=s.start-1;
+  const story=document.getElementById('story');
+  story.style.background=s.bg;
+  document.getElementById('story-meta').textContent=s.meta;
+  document.getElementById('story-body').innerHTML=s.body;
+  let bars='';for(let i=0;i<s.segs;i++)bars+=`<div class="bar" id="bar${i}"><i></i></div>`;
+  document.getElementById('bars').innerHTML=bars;
+  paintBars();
+  story.classList.add('open');
+}
+function paintBars(){
+  document.querySelectorAll('#bars .bar').forEach((b,i)=>{
+    b.className='bar'+(i<curSeg?' done':i===curSeg?' active':'');});
+}
+function storyNext(){if(!curStory)return;
+  if(curSeg<curStory.segs-1){curSeg++;paintBars();}else closeStory();}
+function storyPrev(){if(!curStory)return;if(curSeg>0){curSeg--;paintBars();}}
+function closeStory(){const st=document.getElementById('story');
+  if(!st.classList.contains('open'))return;
+  st.classList.add('closing');
+  setTimeout(()=>{st.classList.remove('open','closing');curStory=null;},270);}
+
+/* ---------- LOG SYMPTOMS sheet ---------- */
+const quick=[{e:'🤱',l:'Tender breasts'},{e:'🍔',l:'Cravings'},{e:'🔋',l:'Fatigue'},{e:'😢',l:'Mood swings'}];
+document.getElementById('quick').innerHTML=quick.map((q,i)=>
+  `<div class="qitem" onclick="this.classList.toggle('on');refreshSave()">
+     <div class="qc">${q.e}</div><div class="ql">${q.l}</div></div>`).join('');
+
+/* ---------- ALL logging categories (cloned 1:1 from the real app's flat list) ---------- */
+const categories=[
+ {title:"Sex and sex drive",cls:"",chips:[["🚫","Didn't have sex"],["🔒","Protected sex"],
+   ["🔓","Unprotected sex"],["💋","Oral sex"],["💗","Masturbation"],["🤲","Sensual touch"],
+   ["✨","Orgasm"],["💢","No orgasm"],["💕","High sex drive"],["💟","Neutral sex drive"],["🤍","Low sex drive"]]},
+ {title:"Mood",cls:"t-mood",chips:[["😌","Calm"],["🙂","Happy"],["🤩","Energetic"],["😜","Frisky"],
+   ["😢","Mood swings"],["😠","Irritated"],["😞","Sad"],["😰","Anxious"],["😔","Depressed"],
+   ["😣","Feeling guilty"],["🌫️","Obsessive thoughts"],["🪫","Low energy"],["😑","Apathetic"],
+   ["😕","Confused"],["😖","Very self-critical"]]},
+ {title:"Symptoms",cls:"t-symp",chips:[["👍","Everything is fine"],["🎯","Cramps"],["🤱","Tender breasts"],
+   ["🤕","Headache"],["🫥","Acne"],["🔥","Backache"],["🔋","Fatigue"],["🥵","Hot flashes"],
+   ["😓","Night sweats"],["🌁","Brain fog"],["🦴","Joint pain"],["🌶️","Burning mouth"],["🍔","Cravings"],
+   ["🌙","Insomnia"],["😖","Abdominal pain"],["🌸","Vaginal itching"],["🏜️","Vaginal dryness"],
+   ["🧴","Dry skin"],["👁️","Dry eyes"]]},
+ {title:"Vaginal discharge",cls:"t-disch",chips:[["🚫","No discharge"],["💧","Creamy"],["💦","Watery"],
+   ["🍯","Sticky"],["🥚","Egg white"],["🩸","Spotting"],["❗","Unusual"],["⚪","Clumpy white"],["🩶","Gray"]]},
+ {title:"Digestion and stool",cls:"t-dig",chips:[["🤢","Nausea"],["🎈","Bloating"],["🔒","Constipation"],["💨","Diarrhea"]]},
+ {title:"Pregnancy test",cls:"t-preg",chips:[["🚫","Didn't take tests"],["➕","Positive"],["➖","Negative"],["〰️","Faint line"]]},
+ {title:"Ovulation test",cls:"t-ovul",tutorial:true,subtitle:"Log them to know when you ovulate",
+   chips:[["🧪","Log ovulation test"],["🚫","Didn't take tests"],["📋","Ovulation: my method"]]},
+ {title:"Other",cls:"t-other",chips:[["📍","Travel"],["⚡","Stress"],["🧘","Meditation"],["📖","Journaling"],
+   ["💪","Kegel exercises"],["🫁","Breathing exercises"],["🩹","Disease or injury"],["🍷","Alcohol"],["💊","Hormonal therapy"]]},
+ {title:"Physical activity",cls:"t-act",chips:[["🚫","Didn't exercise"],["🤸","Yoga"],["🏋️","Gym"],
+   ["🎵","Aerobics & dancing"],["🏊","Swimming"],["🏀","Team sports"],["🏃","Running"],["🚴","Cycling"],["🚶","Walking"]]},
+ {title:"Oral contraceptives (OC)",cls:"t-oc",link:"Set up reminders",
+   chips:[["💊","Taken on time"],["⏰","Yesterday's pill"]]},
+ {title:"Other pills (non-OC)",cls:"t-oc",subtitle:"Log other pills you take a day",link:"Set up reminders",
+   chips:[["➕","Add pill"]]},
+];
+const widgets=`
+ <div class="catcard">
+   <div class="wrow"><span class="wic">🥤</span><h4>Water</h4>
+     <div class="wbtns"><button class="roundbtn" onclick="bumpWater(-1)">−</button>
+       <button class="roundbtn dark" onclick="bumpWater(1)">+</button></div></div>
+   <div class="wval"><b id="watercount">0</b>/ 64 fl. oz.</div>
+   <div class="linkrow" onclick="toast('Reminders and Settings')">Reminders and Settings <span>›</span></div>
+ </div>
+ <div class="catcard">
+   <div class="wrow"><span class="wic">⚖️</span><h4>Weight</h4>
+     <div class="wbtns"><button class="roundbtn" onclick="toast('Weight cleared')">🗑</button>
+       <button class="roundbtn dark" onclick="toast('Log your weight')">✏️</button></div></div>
+   <div class="whint">Log your weight</div>
+   <div class="linkrow" onclick="toast('View chart')">View chart <span>›</span></div>
+ </div>
+ <div class="catcard">
+   <div class="wrow"><span class="wic">🌡️</span><h4>Basal temperature</h4>
+     <div class="wbtns"><button class="roundbtn" onclick="toast('Temperature cleared')">🗑</button>
+       <button class="roundbtn dark" onclick="toast('Log your temperature')">✏️</button></div></div>
+   <div class="whint">Log your temperature</div>
+   <div class="linkrow" onclick="toast('View chart')">View chart <span>›</span></div>
+ </div>
+ <div class="catcard">
+   <div class="wrow"><span class="wic">📝</span><h4>Notes</h4>
+     <div class="wbtns"><button class="roundbtn" onclick="toast('Note cleared')">🗑</button>
+       <button class="roundbtn dark" onclick="toast('Add a note')">✏️</button></div></div>
+   <div class="whint">Add a note about today</div>
+ </div>`;
+document.getElementById('allcats').innerHTML=categories.map(c=>`
+ <div class="catcard" data-cat="${c.title}">
+   <h4>${c.title}${c.tutorial?'<span class="tut">Tutorial ▶</span>':''}</h4>
+   ${c.subtitle?`<div class="subt">${c.subtitle}</div>`:''}
+   <div class="chips">${c.chips.map(p=>`<div class="chip ${c.cls}"
+     onclick="this.classList.toggle('on');refreshSave()"><span class="ce">${p[0]}</span>${p[1]}</div>`).join('')}</div>
+   ${c.link?`<div class="linkrow" onclick="toast('${c.link}')">${c.link} <span>›</span></div>`:''}
+ </div>`).join('')+widgets;
+
+let water=0;
+function bumpWater(d){water=Math.max(0,Math.min(64,water+8*d));
+  document.getElementById('watercount').textContent=water;
+  if(d>0&&water<=64)toast('Water: '+water+' fl. oz. logged');}
+
+/* ---------- Edit categories page ---------- */
+document.getElementById('eclist').innerHTML=categories.map(c=>`
+  <div class="ecrow">${c.title}
+    <span class="sw on" onclick="toggleCat(this,'${c.title}')"></span></div>`).join('');
+function toggleCat(sw,title){
+  sw.classList.toggle('on');
+  const on=sw.classList.contains('on');
+  document.querySelectorAll('#allcats .catcard[data-cat]').forEach(card=>{
+    if(card.dataset.cat===title)card.style.display=on?'':'none';});
+  toast(title+(on?' added':' removed'));}
+function openEditCats(){document.getElementById('editcats').classList.add('open');}
+function closeEditCats(){const ec=document.getElementById('editcats');
+  if(!ec.classList.contains('open'))return;
+  ec.classList.add('closing');
+  setTimeout(()=>{ec.classList.remove('open','closing');},270);}
+
+let cycleDay=21,dayOffset=0;
+function bumpDay(d){dayOffset+=d;cycleDay=21+dayOffset;
+  document.getElementById('sheet-cycle').textContent='Cycle day '+cycleDay;
+  document.getElementById('sheet-day-label').textContent=
+    dayOffset===0?'Today':dayOffset<0?Math.abs(dayOffset)+' day'+(dayOffset<-1?'s':'')+' ago'
+    :'In '+dayOffset+' day'+(dayOffset>1?'s':'');}
+function refreshSave(){
+  const n=document.querySelectorAll('#sheet .on').length;
+  const b=document.getElementById('savebtn');
+  b.disabled=n===0;b.textContent=n===0?'Select to save':'Save '+n+' symptom'+(n>1?'s':'');}
+function saveLog(){
+  const n=document.querySelectorAll('#sheet .on').length;
+  closeSheet();toast(n+' symptom'+(n>1?'s':'')+' logged');
+  document.querySelectorAll('#sheet .on').forEach(e=>e.classList.remove('on'));refreshSave();}
+function openSheet(){document.getElementById('sheet').classList.add('open');}
+function closeSheet(){const sh=document.getElementById('sheet');
+  if(!sh.classList.contains('open'))return;
+  sh.classList.add('closing');
+  setTimeout(()=>{sh.classList.remove('open','closing');},270);}
+// drag handle / tap outside top closes sheet
+document.querySelector('#sheet .handle').addEventListener('click',closeSheet);
+
+/* ---------- swipe up on any pop-up fades back to home ---------- */
+function addSwipeUp(el,fn){let y0=null;
+  el.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+  el.addEventListener('touchend',e=>{if(y0===null)return;
+    if(y0-e.changedTouches[0].clientY>70)fn();y0=null;},{passive:true});}
+addSwipeUp(document.getElementById('story'),closeStory);
+addSwipeUp(document.querySelector('#sheet .sheet-head'),closeSheet);
+addSwipeUp(document.querySelector('#sheet .handle'),closeSheet);
+addSwipeUp(document.querySelector('#editcats .echead'),closeEditCats);
+addSwipeUp(document.querySelector('#editcats .handle'),closeEditCats);
+document.querySelector('#editcats .handle').addEventListener('click',closeEditCats);
+
+/* ---------- bottom tabs ---------- */
+const tabs=[{i:'📅',l:'Today',k:'today'},{i:'🔲',l:'Insights',k:'x',dot:0},
+  {i:'🎭',l:'Secret Chats',k:'x',dot:1},{i:'💬',l:'Messages',k:'x',dot:1},
+  {i:'👥',l:'Partner',k:'x',dot:0}];
+document.getElementById('tabs').innerHTML=tabs.map((t,i)=>
+  `<div class="tab ${i===0?'active':''}" onclick="tapTab('${t.k}','${t.i}','${t.l}')">
+     <div class="ti">${t.i}</div>${t.dot?'<div class="dot"></div>':''}${t.l}</div>`).join('');
+function tapTab(k,emoji,label){
+  if(k==='today'){goToday();return;}
+  document.getElementById('ph-emoji').textContent=emoji;
+  document.getElementById('ph-title').textContent=label;
+  document.getElementById('placeholder').classList.add('show');
+  setTab(label);
+}
+function goToday(){document.getElementById('placeholder').classList.remove('show');setTab('Today');}
+function setTab(label){document.querySelectorAll('.tab').forEach(t=>
+  t.classList.toggle('active',t.textContent.trim().endsWith(label)));}
+
+/* ---------- toast ---------- */
+let tt;function toast(msg){const el=document.getElementById('toast');el.textContent=msg;
+  el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),1900);}
+</script>
