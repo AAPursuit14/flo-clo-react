@@ -18,7 +18,7 @@ export default function useOverlay() {
     setPhase((p) => {
       if (p !== 'open') return p
       clearTimeout(timer.current)
-      timer.current = setTimeout(() => setPhase('closed'), 270)
+      timer.current = setTimeout(() => setPhase('closed'), 320)
       return 'closing'
     })
   }, [])

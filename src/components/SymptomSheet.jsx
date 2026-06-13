@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { categories, quickItems } from '../data'
-import useSwipeUp from '../hooks/useSwipeUp'
+import useDragToClose from '../hooks/useDragToClose'
 
 function dayLabel(offset) {
   if (offset === 0) return 'Today'
@@ -12,7 +12,7 @@ export default function SymptomSheet({ className, hiddenCats, onClose, onEditCat
   const [selected, setSelected] = useState(() => new Set())
   const [water, setWater] = useState(0)
   const [dayOffset, setDayOffset] = useState(0)
-  const swipe = useSwipeUp(onClose)
+  const drag = useDragToClose(onClose)
 
   const toggle = (key) => {
     setSelected((prev) => {
@@ -38,8 +38,10 @@ export default function SymptomSheet({ className, hiddenCats, onClose, onEditCat
   }
 
   return (
-    <div className={`sheet ${className}`} {...swipe}>
-      <div className="handle" onClick={onClose}></div>
+    <div className={`sheet ${className}`} style={drag.dragStyle}>
+      <div className="grabzone" {...drag.grabProps}>
+        <div className="handle"></div>
+      </div>
       <div className="sheet-head">
         <div className="arrow" onClick={() => setDayOffset(dayOffset - 1)}>‹</div>
         <div className="ttl">

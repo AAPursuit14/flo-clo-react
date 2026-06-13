@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { categories } from '../data'
-import useSwipeUp from '../hooks/useSwipeUp'
+import useDragToClose from '../hooks/useDragToClose'
 
 export default function EditCategories({ className, hiddenCats, onToggleCat, onClose }) {
   const [suggested, setSuggested] = useState(true)
-  const swipe = useSwipeUp(onClose)
+  const drag = useDragToClose(onClose)
 
   return (
-    <div className={`editcats ${className}`} {...swipe}>
-      <div className="handle" onClick={onClose}></div>
+    <div className={`editcats ${className}`} style={drag.dragStyle}>
+      <div className="grabzone" {...drag.grabProps}>
+        <div className="handle"></div>
+      </div>
       <div className="echead">
         <span className="arrow" onClick={onClose}>‹</span>
         <h2>Edit categories</h2>

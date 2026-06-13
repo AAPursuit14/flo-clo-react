@@ -11,7 +11,10 @@
       "Bash(curl -s http://localhost:62245/)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Flo home screen + My Daily Insights carousel as React + Vite app *)"
+      "Bash(git commit -m 'Flo home screen + My Daily Insights carousel as React + Vite app *)",
+      "Bash(gh repo *)",
+      "Bash(git commit -q -m 'Add month-grid calendar; drag-down-to-close for bottom sheets *)",
+      "Bash(git push *)"
     ]
   }
 }

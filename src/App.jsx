@@ -10,6 +10,7 @@ import Placeholder from './components/Placeholder'
 import StoryOverlay from './components/StoryOverlay'
 import SymptomSheet from './components/SymptomSheet'
 import EditCategories from './components/EditCategories'
+import MonthCalendar from './components/MonthCalendar'
 import Toast from './components/Toast'
 import useOverlay from './hooks/useOverlay'
 
@@ -25,6 +26,7 @@ export default function App() {
   const storyOv = useOverlay()
   const sheetOv = useOverlay()
   const editOv = useOverlay()
+  const calOv = useOverlay()
 
   const showToast = useCallback((msg) => {
     setToast({ msg, show: true })
@@ -77,7 +79,7 @@ export default function App() {
       {/* ===== HOME SCREEN ===== */}
       <div className="screen">
         <StatusBar />
-        <TopBar />
+        <TopBar onOpenCalendar={calOv.open} />
         <WeekStrip periodOn={periodOn} />
         <Hero periodOn={periodOn} onLogPeriod={logPeriod} />
         <div className="lower">
@@ -128,6 +130,14 @@ export default function App() {
         onToggleCat={toggleCat}
         onClose={editOv.close}
       />
+
+      {calOv.isOpen && (
+        <MonthCalendar
+          className={calOv.className}
+          periodOn={periodOn}
+          onClose={calOv.close}
+        />
+      )}
 
       <TabBar activeLabel={placeholder ? placeholder.title : 'Today'} onTap={tapTab} />
       <Toast message={toast.msg} show={toast.show} />

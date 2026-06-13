@@ -98,6 +98,19 @@ export const categories = [
     chips: [['➕', 'Add pill']] },
 ]
 
+/* full month grid (June 2026 — derived from the week strip: June 7 is a
+   Sunday and the 10th is "today", which lines up with June 2026). Sunday-first
+   rows; days from neighboring months are muted. */
+export const monthName = 'June 2026'
+export const monthDows = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+export const monthWeeks = [
+  [{ n: 31, mute: true }, { n: 1 }, { n: 2 }, { n: 3 }, { n: 4 }, { n: 5 }, { n: 6 }],
+  [{ n: 7 }, { n: 8 }, { n: 9 }, { n: 10 }, { n: 11 }, { n: 12 }, { n: 13 }],
+  [{ n: 14 }, { n: 15 }, { n: 16 }, { n: 17 }, { n: 18 }, { n: 19 }, { n: 20 }],
+  [{ n: 21 }, { n: 22 }, { n: 23 }, { n: 24 }, { n: 25 }, { n: 26 }, { n: 27 }],
+  [{ n: 28 }, { n: 29 }, { n: 30 }, { n: 1, mute: true }, { n: 2, mute: true }, { n: 3, mute: true }, { n: 4, mute: true }],
+]
+
 /* bottom tab bar */
 export const tabs = [
   { i: '📅', l: 'Today', k: 'today' },
