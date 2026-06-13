@@ -4,7 +4,7 @@ A clone of the **Flo** period-tracking app's home screen and its **"My Daily
 Insights"** carousel. Built as a project for an **AI Native cohort** to practice
 recreating a real, polished mobile interface and then improving on it.
 
-> **Live demo:** deployed on Vercel — paste your Vercel link here.
+> **Live demo:** [flo-clo-react.vercel.app](https://flo-clo-react.vercel.app/)
 
 ---
 
